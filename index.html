@@ -91,6 +91,48 @@ input[type="search"] { border:1px solid var(--line); border-radius:8px; padding:
 .sprint-sub { text-align:center; color:var(--muted); min-height:20px; }
 .sprint-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; align-content:start; }
 @media (max-width:980px) { .ref-layout,.work-body,.training-layout,.sprint-layout { grid-template-columns:1fr; height:auto; overflow:visible; } .detail,.block-grid { max-height:none; position:static; } .side { position:static; } .variant-list { grid-template-columns:repeat(8,1fr); max-height:none; } .answer-panel { border-left:0; border-top:1px solid var(--line); } .options,.sprint-options { grid-template-columns:1fr; } .passage { max-height:none; overflow:visible; } .sprint-list { max-height:none; } }
+
+<style>
+
+/* EGE 30–36 | concise memo and paronyms lab */
+#memo .memo-top{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:0 0 8px}
+#memo .memo-top h1{margin:0;font-size:22px}
+#memo .memo-switch{display:flex;gap:6px}
+#memo .memo-switch button{padding:7px 12px;font-size:15px;font-weight:800}
+#memo .memo-switch button.active{background:#6243a9;border-color:#6243a9;color:#fff}
+#memo .memo-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(440px,1fr);gap:10px;height:calc(100dvh - 105px);min-height:460px}
+#memo .memo-guide,#memo .memo-practice{overflow:auto;min-height:0}
+#memo .memo-guide{padding:11px}
+#memo .memo-guide h2{margin:0 0 8px;font-size:18px}
+#memo .memo-guide-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#memo .memo-word{border:1px solid #e1d9f1;background:#faf8ff;padding:8px 10px;border-radius:9px}
+#memo .memo-word strong{font-size:15px;color:#3b2770;display:block;margin-bottom:4px}
+#memo .memo-word span{font-size:13px;line-height:1.38;display:block}
+#memo .memo-word em{font-style:normal;font-size:13px;color:#41526b;display:block;margin-top:3px}
+#memo .memo-practice{display:flex;flex-direction:column;padding:15px;gap:9px}
+#memo .memo-progress{font-size:14px;color:#5e536f;font-weight:700}
+#memo .memo-question{font-size:clamp(20px,2.1vw,29px);line-height:1.38;font-weight:800;padding:10px 0}
+#memo .memo-answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#memo .memo-answers button{min-height:55px;text-align:left;padding:10px 12px;font-size:19px;font-weight:700;border-radius:10px;border:1px solid #d8cff0;background:#f3edff;color:#322259;cursor:pointer}
+#memo .memo-answers button:disabled{cursor:default}
+#memo .memo-answers button.memo-right{background:#e7f7ed;border-color:#37a56b;color:#15693c}
+#memo .memo-answers button.memo-wrong{background:#fdeceb;border-color:#d45a5a;color:#9a2525}
+#memo .memo-feedback{font-size:16px;line-height:1.43;min-height:74px;border-radius:9px;padding:9px;background:#f7f4fc}
+#memo .memo-feedback:empty{background:transparent}
+#memo .memo-nav{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:7px}
+#memo .memo-nav button{font-size:16px;font-weight:700;min-height:43px}
+#memo .memo-verb-entry{border:1px solid #d8e3f1;border-radius:8px;background:#f8fbff;padding:9px}
+#memo .memo-verb-entry strong{font-size:17px;color:#273d6e}
+#memo .memo-verb-entry .meaning{font-size:14px;margin:3px 0}
+#memo .memo-verb-entry .examples{font-size:14px;line-height:1.4;font-weight:650;color:#243d53}
+#memo .memo-verb-entry .note{font-size:13px;color:#52657f;margin-top:3px}
+#memo .memo-verb-input{display:flex;gap:8px}
+#memo .memo-verb-input input{flex:1;min-width:0;border:2px solid #bcb1da;border-radius:8px;padding:10px;font-size:21px}
+#memo .memo-verb-input button{font-size:16px;font-weight:700}
+#memo .memo-footnote{font-size:13px;color:#627086;margin-top:8px}
+@media(max-width:980px){#memo .memo-grid{grid-template-columns:1fr;height:auto;min-height:0}#memo .memo-guide,#memo .memo-practice{overflow:visible}#memo .memo-guide-list{grid-template-columns:1fr 1fr}#memo .memo-practice{min-height:380px}}
+@media(max-width:600px){#memo .memo-guide-list{grid-template-columns:1fr}#memo .memo-answers{grid-template-columns:1fr}#memo .memo-question{font-size:21px}#memo .memo-switch button{font-size:13px;padding:6px}}
+
 </style>
 </head>
 <body>
@@ -98,6 +140,7 @@ input[type="search"] { border:1px solid var(--line); border-radius:8px; padding:
   <nav class="top">
     <div class="logo">ЕГЭ 30-36</div>
     <button class="tab active" data-view="reference">Справочник</button>
+    <button class="tab" data-view="memo">Памятка</button>
     <button class="tab" data-view="training">Тренировка</button>
     <button class="tab" data-view="sprint">Спринт</button>
   </nav>
@@ -107,6 +150,11 @@ input[type="search"] { border:1px solid var(--line); border-radius:8px; padding:
       <div class="statbar"><div class="stat"><b id="blockCount">0</b><span>блоков из заданий</span></div><div class="stat"><b>357</b><span>заданий 30-36</span></div><div class="stat"><b>51</b><span>вариант</span></div></div>
       <div class="tools"><input id="search" type="search" placeholder="поиск: suggest, trip, hardly, предлог, запятая"><button class="btn" id="clearSearch">Очистить</button><button class="btn primary" id="trainBlock">Тренировать блок</button></div>
       <div class="ref-layout"><div class="block-grid" id="blockGrid"></div><article class="detail card" id="detail"></article></div>
+    </section>
+
+    <section class="view" id="memo">
+      <div class="memo-top"><h1>Памятка · ЕГЭ 30–36</h1><div class="memo-switch"><button class="btn active" id="memoParonyms">Паронимы · 15</button><button class="btn" id="memoVerbs">Get / gain и ещё 5 · 10</button></div></div>
+      <div class="memo-grid"><article class="card memo-guide" id="memoGuide"></article><article class="card memo-practice" id="memoPractice"></article></div>
     </section>
     <section class="view" id="training">
       <div class="training-layout">
@@ -188,6 +236,52 @@ $('startSprint').addEventListener('click', startSprint);
 $('nextSprint').addEventListener('click', nextSprint);
 $('flipSprint').addEventListener('click',()=>{ state.sprintReverse=!state.sprintReverse; nextSprint(); });
 renderBlocks(); renderVariant(); renderSprintBlocks();
+</script>
+<script>
+
+const MEMO_PARONYMS = [["Lack of sleep can seriously ______ your memory.",["effect","affect","infect","afflict"],1,"affect / effect","affect — влиять (глагол); effect — результат, эффект (существительное).","affect your memory — повлиять на память."],["The school decided to ______ stricter rules about phones.",["adapt","adept","adopt","adjust"],2,"adopt / adapt","adopt — принять правило или решение; adapt — приспособить; adept — умелый.","adopt stricter rules — принять более строгие правила."],["In ______, I agree with you, but it’s difficult in practice.",["principal","principle","principally","prince"],1,"principle / principal","in principle — в принципе; principal — главный, директор школы.","in principle — устойчивое выражение."],["Babies’ skin is very ______ to the sun.",["sensible","sensitive","sensual","sensational"],1,"sensitive / sensible","sensitive to — чувствительный к; sensible — разумный.","sensitive to the sun — чувствительный к солнцу."],["My doctor ______ me to drink more water.",["advice","advised","devised","revised"],1,"advice / advise","advise — советовать (глагол); advice — совет (существительное).","advise someone to do something — посоветовать кому-то что-то сделать."],["Please ______ that all windows are closed before you leave.",["insure","assure","ensure","reassure"],2,"ensure / insure / assure","ensure that — убедиться, обеспечить; insure — застраховать; assure somebody — заверить кого-то.","ensure that all windows are closed — убедиться, что все окна закрыты."],["It was very ______ of you to bring me flowers in hospital.",["considerable","considerate","considered","consideration"],1,"considerate / considerable","considerate — внимательный к другим; considerable — значительный.","It was considerate of you — это было очень заботливо с твоей стороны."],["The signing of the treaty was a ______ moment for both countries.",["historical","historian","historic","history"],2,"historic / historical","historic — исторически важный; historical — относящийся к истории.","a historic moment — знаменательный момент."],["The city ______ has voted to build a new park.",["counsel","consul","cancel","council"],3,"council / counsel","council — совет, орган власти; counsel — совет, консультировать.","city council — городской совет."],["Small cars are more ______ than big ones because they use less fuel.",["economic","economical","economics","economist"],1,"economical / economic","economical — экономичный; economic — экономический.","economical cars — машины с меньшим расходом топлива."],["Prices have ______ by 10% since January.",["raised","risen","aroused","arisen"],1,"rise / raise","rise–rose–risen — подниматься (без дополнения); raise–raised–raised — поднимать что-то.","prices have risen — цены выросли."],["Everyone came to the party ______ Tom, who was ill.",["accept","expect","except","excerpt"],2,"except / accept / expect","except — кроме; accept — принимать; expect — ожидать.","everyone except Tom — все, кроме Тома."],["We heard the ______ noise of traffic all night long.",["continual","continuous","contagious","contiguous"],1,"continuous / continual","continuous — непрерывный; continual — часто повторяющийся с перерывами.","continuous noise — непрерывный шум."],["She paid me a lovely ______ on my new dress.",["complement","complaint","compliment","implement"],2,"compliment / complement","compliment — комплимент; complement — дополнение, дополнять.","pay someone a compliment — сделать комплимент."],["I didn’t ______ how late it was until I looked at my watch.",["realise","release","relieve","receive"],0,"realise / release","realise — осознать; release — выпустить; relieve — облегчить; receive — получить.","realise how late it was — осознать, как поздно."]];
+const MEMO_VERBS = [["get","получать, становиться, добираться","get a letter · get a job · get better · get home · get ready · get rid of","Самый широкий, разговорный вариант."],["gain","приобретать постепенно или благодаря опыту","gain experience · gain knowledge · gain weight · gain popularity · gain confidence · gain access to","Типично: gain experience, gain confidence."],["obtain","получить официально (формальное)","obtain a visa · obtain a permit · obtain information · obtain permission · obtain a degree","Особенно документы, разрешения, официальные сведения."],["achieve","добиться результата","achieve a goal · achieve success · achieve results · achieve an ambition · achieve high grades","Для целей и результатов; приз обычно receive / win."],["attain","достичь уровня или положения (формальное)","attain a level · attain independence · attain a goal","Фокус на достижении уровня или статуса."],["receive","получить то, что дали или прислали","receive a letter · receive a gift · receive an award · receive treatment · receive a warm welcome","Получение награды, письма, подарка, лечения."],["perceive","воспринимать, замечать, считать","perceive a difference · perceive something as a threat · how people perceive you","Не значит «получать». Сочетается с as."]];
+const MEMO_VERB_QUESTIONS = [["She ______ a lot of experience working abroad.",["gained"],"gain experience — приобрести опыт."],["You need to ______ a visa before you travel.",["obtain"],"obtain a visa — официально получить визу."],["He ______ a prize for his science project.",["received"],"receive a prize — получить приз."],["Teenagers often ______ adults as too strict.",["perceive"],"perceive somebody as — воспринимать кого-то как."],["After years of hard work, she ______ her goal.",["achieved","attained"],"achieve / attain a goal — достичь цели (attain формальнее)."],["If you work hard, you can ______ anything you want.",["achieve"],"achieve a goal / a result — добиться результата."],["We finally ______ home at midnight.",["got"],"get home — добраться домой; Past Simple got."],["She has ______ a lot of confidence since starting university.",["gained"],"gain confidence — обрести уверенность."],["You must ______ permission before entering the laboratory.",["obtain"],"obtain permission — получить разрешение."],["The athlete hopes to ______ the highest level of competition.",["attain"],"attain a level — достичь высокого уровня."]];
+const memoState = {mode:'paronyms', p:0, v:0, answers:Array(15).fill(null), verbs:Array(10).fill(null)};
+function memoScore(arr, source, key) {return arr.reduce((n,a,i)=>n+(a!==null && (key==='p'?a===source[i][2]:source[i][1].includes(a))?1:0),0);}
+function memoGuideRender() {
+ let html='';
+ if(memoState.mode==='paronyms') {
+   html='<h2>Сначала разберись в значениях</h2><div class="memo-guide-list">'+MEMO_PARONYMS.map((p,i)=>'<div class="memo-word"><strong>'+ (i+1)+'. '+esc(p[3])+'</strong><span>'+esc(p[4])+'</span></div>').join('')+'</div>';
+ }else {
+   html='<h2>Collocations: важнее перевода</h2><div class="memo-guide-list">'+MEMO_VERBS.map(v=>'<div class="memo-verb-entry"><strong>'+esc(v[0])+'</strong><div class="meaning">'+esc(v[1])+'</div><div class="examples">'+esc(v[2])+'</div><div class="note">'+esc(v[3])+'</div></div>').join('')+'</div><p class="memo-footnote">В большинстве типичных случаев: gain experience; obtain a visa; achieve success; receive an award; perceive somebody as…</p>';
+ }
+ $('memoGuide').innerHTML=html;
+}
+function memoPracticeRender() {
+ const isP=memoState.mode==='paronyms', i=isP?memoState.p:memoState.v, data=isP?MEMO_PARONYMS:MEMO_VERB_QUESTIONS, row=data[i], ans=isP?memoState.answers[i]:memoState.verbs[i], total=data.length, score=memoScore(isP?memoState.answers:memoState.verbs,data,isP?'p':'v');
+ let h='<div class="memo-progress">'+(isP?'Паронимы · выбор 1 из 4':'Глаголы · впишите слово в нужной форме')+' | '+(i+1)+' / '+total+' | Верно: '+score+'</div><div class="memo-question">'+esc(row[0])+'</div>';
+ if(isP) {
+  h+='<div class="memo-answers">'+row[1].map((o,j)=>'<button type="button" data-memo-option="'+j+'" '+(ans!==null?'disabled':'')+' class="'+(ans!==null && j===row[2]?'memo-right':ans===j && ans!==row[2]?'memo-wrong':'')+'">'+(j+1)+') '+esc(o)+'</button>').join('')+'</div>';
+  h+='<div class="memo-feedback">'+(ans===null?'Выберите один ответ. После выбора появится объяснение.':'<b>'+(ans===row[2]?'Верно.':'Неверно. Правильный ответ: '+esc(row[1][row[2]])+'.')+'</b> '+esc(row[5]))+'</div>';
+ } else {
+  h+='<div class="memo-verb-input"><input id="memoInput" aria-label="Впишите подходящее слово" autocomplete="off" spellcheck="false" '+(ans!==null?'disabled':'')+' placeholder="Your answer"><button class="btn primary" id="memoCheckVerb" '+(ans!==null?'disabled':'')+'>Проверить</button></div>';
+  h+='<div class="memo-feedback">'+(ans===null?'Впишите подходящее слово в нужной грамматической форме.':'<b>'+(row[1].includes(ans)?'Верно.':'Правильный ответ: '+esc(row[1].join(' / '))+'.')+'</b> '+esc(row[2]))+'</div>';
+ }
+ h+='<div class="memo-nav"><button class="btn" id="memoPrev" '+(i===0?'disabled':'')+'>← Назад</button><button class="btn" id="memoRestart">Заново</button><button class="btn primary" id="memoNext">'+(i===total-1?'К первому →':'Дальше →')+'</button></div>';
+ $('memoPractice').innerHTML=h;
+ if(isP) document.querySelectorAll('#memoPractice [data-memo-option]').forEach(b=>b.addEventListener('click',()=>{if(memoState.answers[memoState.p]!==null)return;memoState.answers[memoState.p]=+b.dataset.memoOption;memoPracticeRender();}));
+ else {
+  const input=$('memoInput');
+  if(ans!==null) input.value=ans;
+  function check(){if(memoState.verbs[memoState.v]!==null)return;let a=input.value.trim().toLowerCase().replace(/[.!?]+$/,'');if(!a){input.focus();return;}memoState.verbs[memoState.v]=a;memoPracticeRender();}
+  $('memoCheckVerb').addEventListener('click',check);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')check();});
+ }
+ $('memoPrev').addEventListener('click',()=>{if(isP)memoState.p--;else memoState.v--;memoPracticeRender();});
+ $('memoNext').addEventListener('click',()=>{if(isP)memoState.p=(memoState.p+1)%MEMO_PARONYMS.length;else memoState.v=(memoState.v+1)%MEMO_VERB_QUESTIONS.length;memoPracticeRender();});
+ $('memoRestart').addEventListener('click',()=>{if(!window.confirm('Начать этот блок заново?'))return;if(isP){memoState.answers=Array(15).fill(null);memoState.p=0;}else{memoState.verbs=Array(10).fill(null);memoState.v=0;}memoPracticeRender();});
+}
+function memoMode(mode){memoState.mode=mode;$('memoParonyms').classList.toggle('active',mode==='paronyms');$('memoVerbs').classList.toggle('active',mode==='verbs');memoGuideRender();memoPracticeRender();}
+$('memoParonyms').addEventListener('click',()=>memoMode('paronyms'));
+$('memoVerbs').addEventListener('click',()=>memoMode('verbs'));
+memoMode('paronyms');
+
 </script>
 </body>
 </html>
